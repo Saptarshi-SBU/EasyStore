@@ -1,0 +1,7 @@
+#!/bin/bash
+
+for file in pics/*.JPG
+do
+ echo $file
+ #./main -f $file
+done
