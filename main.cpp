@@ -6,19 +6,29 @@
 
 using namespace std;
 
+struct options {
+	string   ifile;
+	uint32_t chunk_size;
+};
+
 int 
-parse(int argc, char **argv, string& ifile) {
+parse(int argc, char **argv, struct options* opt) {
 
 	int c = 0;
 	int r = -EINVAL;
 
-	while ((c = getopt(argc, argv, "f:")) != -1) {
+	while ((c = getopt(argc, argv, "c:f:")) != -1) {
 
         	switch(c) {
+       		case 'c':
+	    	if (optarg) 
+              		opt->chunk_size = stoul(optarg, 0, 10);
+		r = 0;
+		printf("Chunk Size : %lu\n", opt->chunk_size);
        		case 'f':
 	    	if (optarg) {
 			r = 0;
-              		ifile = string(optarg);
+              		opt->ifile = string(optarg);
 	    	} else
             		fprintf(stderr,
                     	"invalid option: file name missing\n");
@@ -35,23 +45,18 @@ parse(int argc, char **argv, string& ifile) {
 
 int main(int argc, char **argv) {
 
-	ChunkEngine obj;
-
-	string filename;
-#if 0
-	if (parse(argc, argv, filename) < 0)
+	struct options opt;
+	if (parse(argc, argv, &opt) < 0)
 		return -1;
 
-	obj.chunk(filename);
+	ChunkEngine* obj = new ChunkEngine(opt.chunk_size);
 
-	obj.dump_chunk_list();
-#endif
-	
-	ifstream ifs("dat/file_list");
+	ifstream ifs(opt.ifile);
+	string filename;
 	while (getline(ifs, filename))
-		obj.process(filename);
+		obj->process(filename);
 	ifs.close();
-	obj.chunk_stat();
-	obj.chunk_cmp();
+
+	obj->chunk_stat();
         return 0;
 }

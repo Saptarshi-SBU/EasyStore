@@ -14,6 +14,8 @@
 
 ChunkEngine::ChunkEngine()  { }
 
+ChunkEngine::ChunkEngine(uint32_t size) : chunk_size_(size) { }
+
 ChunkEngine::~ChunkEngine() {
 
 	if (fpstore_.size())
@@ -81,6 +83,8 @@ char* ChunkEngine::mem_alloc(size_t length) {
 }
 
 void ChunkEngine::chunk(ifstream& ifile, char* chunkbase, size_t length) {
+	static size_t total_chunks = 0;
+
 	try {
 		uint64_t key;
 
@@ -89,14 +93,20 @@ void ChunkEngine::chunk(ifstream& ifile, char* chunkbase, size_t length) {
 		ifile.read(chunkbase, length);
 
 		for (int b = 0; b < round_size; b+=chunk_size_) {
+			total_chunks++;
 			key = MurmurHash64A (( const void *) (chunkbase + b), chunk_size_, FP_SEED);
-			fpstore_.insert(make_pair(key, chunkbase + b));
+			if (0 == chunk_cmp_single(key, chunkbase + b))
+			  fpstore_.insert(make_pair(key, chunkbase + b));
 		}
 	} catch (exception& ex) {
 
 		cout << ex.what() << endl;
 		throw ex;
 	}
+
+	#if DEBUG
+	printf("unique_chunks : %llu total chunks : %llu dedup size : %llu\n", fpstore_.size(), total_chunks, (total_chunks - fpstore_.size()) * chunk_size_);
+	#endif
 }
 
 void ChunkEngine::process(string& file) {
@@ -134,27 +144,21 @@ void ChunkEngine::chunk_stat(void) {
 	for (auto i : bpstore_)
 	     q+= (i.second/chunk_size_);
 
-	assert(fpstore_.size() == q);
-	cout << " p : " << fpstore_.size() << " q : " << q << endl; 
+	cout << " dedup size " << (q - fpstore_.size()) * chunk_size_ << " bytes" << endl; 
 }
 
-void ChunkEngine::chunk_cmp(void) {
-	size_t p = 0;
-	size_t q = 0, d = 0;
+int ChunkEngine::chunk_cmp_single(uint64_t key, char *mem) {
 
-	vector<char*> result;
+	if (fpstore_.empty())
+		return 0;
 
-	for (auto& i : fpstore_) {
-		q = fpstore_.count(i.first);
-		if (q > 1) {
-                	auto it_bounds = fpstore_.equal_range(i.first);
-                	for (auto it=it_bounds.first; it!=it_bounds.second; it++)
-                    		result.push_back(it->second);
-			if (0 == memcmp(result.at(0), result.at(1), chunk_size_))
-				p++;
-                        result.clear();
-			d+=q;
-                }
-        }
-	cout << "Match Chunks : " << p << " Duplicate keys : " << d << " Chunk Size : " << chunk_size_ << endl;
+	if (fpstore_.count(key)) {
+        	auto it_bounds = fpstore_.equal_range(key);
+        	for (auto it=it_bounds.first; it!=it_bounds.second; it++) {
+			if (0 == memcmp(mem, it->second, chunk_size_))
+		   		return 1;
+		}
+	}
+	return 0;
 }
+

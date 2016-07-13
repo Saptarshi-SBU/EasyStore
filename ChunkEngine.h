@@ -10,7 +10,10 @@
 #define CHUNK_SIZE 4096
 
 //#define CHUNK_SIZE 512
+
 //#define CHUNK_SIZE 128
+
+//#define CHUNK_SIZE 64
 
 using namespace std;
 
@@ -18,7 +21,7 @@ class ChunkEngine {
 
 	private :
 
-	const uint32_t chunk_size_ = CHUNK_SIZE;
+	uint32_t chunk_size_ = CHUNK_SIZE;
 
 	unordered_map<char*, size_t> bpstore_;
 
@@ -38,13 +41,18 @@ class ChunkEngine {
 
 	ChunkEngine();
 
+	ChunkEngine(uint32_t);
+
        ~ChunkEngine();
 
 	void process(string& file);
 
 	void chunk_stat(void);
-
+#if 0
 	void chunk_cmp(void);
+#endif
+	int chunk_cmp_single(uint64_t key, char *mem);
+
 };
 
 #endif
