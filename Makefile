@@ -1,10 +1,11 @@
 SRC=main.cpp
 SRC+=ChunkEngine.cpp
 SRC+=MurmurHash2.cpp
+SRC+=NearDuplicate.cpp
+SRC+=ThreadedNearDuplicate.cpp
 
 all:
-	g++ -o3 -std=c++11 $(SRC) -o main
-	#g++ -g -DDEBUG -std=c++11 $(SRC) -o main
+	g++ -g -std=c++11 $(SRC) -L /usr/local/lib/ libpHash.a -lgomp -lpthread -o main
 
 clean:
 	rm -f main

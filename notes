@@ -10,3 +10,62 @@ Chunk Size : 128
  dedup size 31812352 bytes
 Chunk Size : 64
  dedup size 33484480 bytes
+
+[ssen@localhost EasyStore]$ ./main -d pics -t 15
+read_imgv
+Reading directory pics
+progress_bar
+comp_imgv_sig
+compute_thread
+compute_thread
+compute_thread
+compute_thread
+compute_thread
+compute_thread
+compute_thread
+compute_thread
+compute_thread
+compute_thread
+compute_thread
+compute_thread
+compute_thread
+compute_thread
+compute_thread
+compute_thread
+Progress :100%
+delta = 665
+merge_sig
+process_near_duplicate
+[0]hamming dist	10	pics/DSC_0393.JPG	pics/DSC_0392.JPG
+[1]hamming dist	12	pics/DSC_0393.JPG	pics/DSC_0394.JPG
+[2]hamming dist	14	pics/DSC_0918.JPG	pics/DSC_0907.JPG
+[3]hamming dist	8	pics/DSC_0909.JPG	pics/DSC_0886.JPG
+[4]hamming dist	6	pics/DSC_0909.JPG	pics/DSC_0891.JPG
+[5]hamming dist	2	pics/DSC_0323.JPG	pics/DSC_0322.JPG
+[6]hamming dist	14	pics/DSC_0905.JPG	pics/DSC_0149.JPG
+[7]hamming dist	14	pics/DSC_0341.JPG	pics/DSC_0340.JPG
+[8]hamming dist	12	pics/DSC_0030.JPG	pics/DSC_0031.JPG
+[9]hamming dist	14	pics/DSC_0867.JPG	pics/DSC_0890.JPG
+[10]hamming dist	14	pics/DSC_0213.JPG	pics/DSC_0214.JPG
+[11]hamming dist	14	pics/DSC_0407.JPG	pics/DSC_0409.JPG
+[12]hamming dist	10	pics/DSC_0395.JPG	pics/DSC_0398.JPG
+[13]hamming dist	14	pics/DSC_0083.JPG	pics/DSC_0085.JPG
+[14]hamming dist	10	pics/DSC_0396.JPG	pics/DSC_0397.JPG
+[15]hamming dist	14	pics/DSC_0887.JPG	pics/DSC_0912.JPG
+[16]hamming dist	14	pics/DSC_0921.JPG	pics/DSC_0882.JPG
+[17]hamming dist	14	pics/DSC_0413.JPG	pics/DSC_0414.JPG
+[18]hamming dist	10	pics/DSC_0610.JPG	pics/DSC_0609.JPG
+[19]hamming dist	14	pics/DSC_0947.JPG	pics/DSC_0575.JPG
+[20]hamming dist	14	pics/DSC_0503.JPG	pics/DSC_0504.JPG
+[21]hamming dist	10	pics/DSC_0916.JPG	pics/DSC_0925.JPG
+[22]hamming dist	14	pics/DSC_0864.JPG	pics/DSC_0899.JPG
+[23]hamming dist	14	pics/DSC_0318.JPG	pics/DSC_0081.JPG
+[24]hamming dist	14	pics/DSC_0673.JPG	pics/DSC_0674.JPG
+[25]hamming dist	14	pics/DSC_0066.JPG	pics/DSC_0061.JPG
+[26]hamming dist	10	pics/DSC_0406.JPG	pics/DSC_0404.JPG
+[27]hamming dist	12	pics/DSC_0615.JPG	pics/DSC_0614.JPG
+[28]hamming dist	14	pics/DSC_0868.JPG	pics/DSC_0567.JPG
+[29]hamming dist	6	pics/DSC_0182.JPG	pics/DSC_0181.JPG
+comp_duplicate_size
+total 851 dup items  30 saved size 273936759
+
