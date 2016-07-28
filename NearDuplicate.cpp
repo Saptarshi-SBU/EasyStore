@@ -2,6 +2,7 @@
 #include <iostream>
 #include <utility>
 #include <algorithm>
+#include <chrono>
 
 #include "NearDuplicate.h"
 #include "pHash.h"
@@ -19,11 +20,11 @@ NearDuplicate::~NearDuplicate() {
 ulong64
 NearDuplicate::compute_imghash(const char* file) {
 	ulong64 hash = 0;
-	ph_dct_imagehash(file, hash); 
+	ph_dct_imagehash(file, hash);
 	return hash;
 }
 
-void 
+void
 NearDuplicate::handle(string& file, ifstream& ifile) {
 
 	ifile.exceptions(ifstream::failbit);
@@ -38,7 +39,7 @@ NearDuplicate::handle(string& file, ifstream& ifile) {
 	}
 }
 
-size_t 
+size_t
 NearDuplicate::size(ifstream& ifile) {
 
 	size_t length;
@@ -101,7 +102,7 @@ NearDuplicate::comp_imgv_sig(void) {
 #endif
 	}
 }
-	
+
 size_t
 NearDuplicate::comp_duplicate_size(void) {
 
@@ -117,7 +118,7 @@ NearDuplicate::comp_duplicate_size(void) {
 	return near_duplicate_size;
 }
 
-void 
+void
 NearDuplicate::process_near_duplicate(void) {
 	size_t i = 0;
 	unordered_map<string, ulong64>::iterator p;
@@ -126,6 +127,8 @@ NearDuplicate::process_near_duplicate(void) {
 	dup_img_.clear();
 
 	cout << __func__ << endl;
+
+	auto begin = chrono::steady_clock::now();
 
 	for (p = fpstore_.begin(); p != fpstore_.end(); p++) {
 		for (q = next(p, 1); q != fpstore_.end(); q++) {
@@ -138,31 +141,13 @@ NearDuplicate::process_near_duplicate(void) {
 			cout << "[" << i++ << "]" << "hamming dist\t" << distance << "\t" << (*p).first << "\t" << (*q).first << endl;
 		}
 	}
+
+	auto end = chrono::steady_clock::now();
+
+	cout << "\ndelta = " << chrono::duration_cast<std::chrono::seconds>(end - begin).count() << endl;
 }
 
-#if 0	
-	for (auto& i : fpstore_) {
-		for (auto& j : fpstore_) {
-			if (i == j)
-				continue;
-			int distance = ph_hamming_distance(i.second, j.second);
-			if ((distance < threshold_) && 
-			    ((find(dup_img_.begin(), dup_img_.end(), j.first) == dup_img_.end()) ||
-			    (find(dup_img_.begin(), dup_img_.end(), j.first) == dup_img_.end())) {
-				ifstream ifs;
-				string   str = j.first;
-
-				get_handle(str, ifs);
-				cout << "[" << p++ << "]" << "Distance " << distance << " " << i.first << " " << j.first << " " << get_size(ifs) << endl;
-				dup_img_.push_back(str);
-				near_duplicate_size+=get_size(ifs);
-			}
-		}
-	}
-}
-#endif
-
-void 
+void
 NearDuplicate::stat_near_duplicate(void) {
 
 	cout << "total " << fpstore_.size() << " dup items  " << dup_img_.size() << " saved size " << comp_duplicate_size() << endl;

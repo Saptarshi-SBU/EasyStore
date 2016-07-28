@@ -30,6 +30,10 @@ class ThreadedNearDuplicate : public NearDuplicate {
 
 		int threads_;
 
+		ulong64 min_;
+
+		ulong64 max_;
+
 		vector<per_thread*> v_args_;
 
 	public :
@@ -40,9 +44,13 @@ class ThreadedNearDuplicate : public NearDuplicate {
 
 		void merge_sig(void);
 
+		void max_min_range(ulong64&, ulong64&);
+
 		void comp_imgv_sig(void);
 
 		void progress_bar(void);
+
+		void process_near_duplicate_aknn(int, int, int);
 };
 
 #endif

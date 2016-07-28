@@ -16,12 +16,12 @@ uint64_t MurmurHash64A ( const void * key, int len, uint64_t seed )
   {
     uint64_t k = *data++;
 
-    k *= m; 
-    k ^= k >> r; 
-    k *= m; 
-    
+    k *= m;
+    k ^= k >> r;
+    k *= m;
+
     h ^= k;
-    h *= m; 
+    h *= m;
   }
 
   const unsigned char * data2 = (const unsigned char*)data;
@@ -37,10 +37,10 @@ uint64_t MurmurHash64A ( const void * key, int len, uint64_t seed )
   case 1: h ^= uint64_t(data2[0]);
           h *= m;
   };
- 
+
   h ^= h >> r;
   h *= m;
   h ^= h >> r;
 
   return h;
-} 
+}

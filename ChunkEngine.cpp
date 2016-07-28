@@ -20,7 +20,7 @@ ChunkEngine::~ChunkEngine() {
 	if (fpstore_.size())
 		fpstore_.clear();
 
-	if (bpstore_.empty()) 
+	if (bpstore_.empty())
 		return;
 
 	for (auto& it : bpstore_)
@@ -62,7 +62,7 @@ size_t ChunkEngine::get_size(ifstream& ifile) {
 }
 
 char* ChunkEngine::mem_alloc(size_t length) {
-	
+
 	char* chunkbase = NULL;
 
 	try {
@@ -117,10 +117,10 @@ void ChunkEngine::process(string& file) {
 	ifile.exceptions(ifstream::failbit);
 
 	try {
-		get_handle(file, ifile); 
+		get_handle(file, ifile);
 		size       = get_size(ifile);
 		chunkbase  = mem_alloc(size);
-   
+
 		chunk(ifile, chunkbase, size);
 
 	} catch (ifstream::failure& fail) {
@@ -143,7 +143,7 @@ void ChunkEngine::chunk_stat(void) {
 	for (auto i : bpstore_)
 	     q+= (i.second/chunk_size_);
 
-	cout << " dedup size " << (q - fpstore_.size()) * chunk_size_ << " bytes" << endl; 
+	cout << " dedup size " << (q - fpstore_.size()) * chunk_size_ << " bytes" << endl;
 }
 
 int ChunkEngine::chunk_cmp_single(uint64_t key, char *mem) {

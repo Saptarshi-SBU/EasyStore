@@ -13,7 +13,7 @@ typedef long long unsigned int ulong64;
 class NearDuplicate {
 
 	private :
-	
+
 	int threshold_;
 
 	protected :

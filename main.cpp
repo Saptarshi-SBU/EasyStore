@@ -20,7 +20,7 @@ struct options {
 	int threads;
 };
 
-int 
+int
 parse(int argc, char **argv, struct options* opt) {
 
 	int c = 0;
@@ -34,7 +34,7 @@ parse(int argc, char **argv, struct options* opt) {
 
         	switch(c) {
        		case 'c':
-	    	if (optarg) 
+	    	if (optarg)
               		opt->chunk_size = stoul(optarg, 0, 10);
 		printf("Chunk Size : %lu\n", opt->chunk_size);
        		case 'f':
@@ -71,7 +71,7 @@ parse(int argc, char **argv, struct options* opt) {
 		r = -EINVAL;
 		}
 	}
-	
+
 	return r;
 }
 
@@ -81,7 +81,7 @@ int main(int argc, char **argv) {
 	struct options opt;
 	if (parse(argc, argv, &opt) < 0)
 		return -1;
-#if DEDUP 
+#if DEDUP
 	ChunkEngine* obj = new ChunkEngine(opt.chunk_size);
 
 	ifstream ifs(opt.ifile);
@@ -117,6 +117,10 @@ int main(int argc, char **argv) {
 	tobj->merge_sig();
 
 	tobj->process_near_duplicate();
+
+        tobj->stat_near_duplicate();
+
+	tobj->process_near_duplicate_aknn(10, 16, opt.threshold);
 
         tobj->stat_near_duplicate();
 #endif
