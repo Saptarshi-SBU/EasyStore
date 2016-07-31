@@ -5,10 +5,14 @@
 #include "MurmurHash2.h"
 #include "NearDuplicate.h"
 #include "ThreadedNearDuplicate.h"
+#include "ImageScale.h"
+#include "ThreadedImageScale.h"
 
 #define DEDUP 0
 #define NEARDUPLICATE 0
-#define FASTNEARDUPLICATE 1
+#define FASTNEARDUPLICATE 0
+#define IMAGESCALER       0
+#define FASTIMAGESCALER   1
 
 using namespace std;
 
@@ -18,6 +22,7 @@ struct options {
 	uint32_t chunk_size;
 	int threshold;
 	int threads;
+	int scale;
 };
 
 int
@@ -30,7 +35,7 @@ parse(int argc, char **argv, struct options* opt) {
 	opt->threshold = 12;
 	opt->chunk_size = 512;
 
-	while ((c = getopt(argc, argv, "c:f:d:t:p:")) != -1) {
+	while ((c = getopt(argc, argv, "c:f:d:t:p:s:")) != -1) {
 
         	switch(c) {
        		case 'c':
@@ -64,6 +69,13 @@ parse(int argc, char **argv, struct options* opt) {
 	    	else
             		fprintf(stderr,
                     	"invalid option: file name missing\n");
+            	break;
+       		case 's':
+	    	if (optarg)
+              		opt->scale = stoul(optarg, 0, 10);
+	    	else
+            		fprintf(stderr,
+                    	"invalid option: scale missing\n");
             	break;
 		case '?':
             	fprintf(stderr,
@@ -124,5 +136,32 @@ int main(int argc, char **argv) {
 
         tobj->stat_near_duplicate();
 #endif
+
+#if IMAGESCALER
+
+	ImgScaler *iobj = new ImgScaler(50);
+
+	iobj->read_images(opt.dir);
+
+	iobj->scale_images();
+
+	iobj->stat();
+
+#endif
+
+#if FASTIMAGESCALER
+	ThreadedImgScaler* tobj = new ThreadedImgScaler(opt.threads, opt.scale);
+
+	tobj->read_images(opt.dir);
+
+	tobj->progress_bar();
+
+	tobj->scale_image_threaded();
+
+	tobj->merge();
+
+        tobj->stat();
+
         return 0;
+#endif
 }
